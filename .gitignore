@@ -1,0 +1,5 @@
+src/.env
+src/__pycache__/
+src/.env
+dist/
+pyxi_kafka_api.egg-info/
