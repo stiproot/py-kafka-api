@@ -8,15 +8,16 @@ author_email = "stipcich.simon@gmail.com"
 url = "https://github.com/stiproot/pyxi-kafka-api"
 license = "MIT"
 keywords = ["python", "package", "kafka", "beta"]
-version = "0.0.1"
-install_requires = ["environs==9.5.0", "fastapi==0.101.1", "pyxi_kafka_client==0.0.1"]
+version = "0.0.2"
+install_requires = ["environs==9.5.0", "fastapi==0.101.1", "pyxi_kafka_client==0.0.3"]
 with open("README.md", "r", encoding="utf-8") as f:
     long_description = f.read()
 
 setup(
-    packages=find_packages("src"),
     name=name,
     version=version,
+    packages=find_packages(where="src"),
+    package_dir={"pyxi_kafka_api": "src/pyxi_kafka_api"},
     description=description,
     long_description=long_description,
     long_description_content_type="text/markdown",

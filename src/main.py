@@ -1,26 +1,23 @@
 from fastapi import FastAPI
-from pyxi_kafka_client import KafkaProducerManager
-from reqs import PublishReq
-import asyncio
+from fastapi.middleware.cors import CORSMiddleware
+from endpoints import get_consumer_configuration, publish_to_topic
+
 
 app = FastAPI()
 
+# origins = [
+#     "http://localhost",
+#     "http://localhost:3000",
+#     "http://localhost:8000",
+# ]
 
-@app.get("/kafka/topic/{topic_name}/consumer/configuration")
-async def get_consumer_configuration(topic_name: str):
-    pass
+app.add_middleware(
+    CORSMiddleware,
+    # allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-
-@app.post("/kafka/topic/{topic_name}/publish")
-async def publish_to_topic(topic_name: str, req: PublishReq):
-    manager = KafkaProducerManager(topic_name).init()
-    manager.publish(req.key, req.payload)
-    return {"status": "accepted"}
-
-
-if __name__ == "__main__":
-
-    async def main():
-        pass
-
-    asyncio.run(main())
+app.include_router(get_consumer_configuration.router, prefix="/kafka")
+app.include_router(publish_to_topic.router, prefix="/kafka")
