@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from pyxi_kafka_client import KafkaProducerManager
 from models.publish_req import PublishReq
+from json import dumps as json_dumps
 
 router = APIRouter()
 
@@ -11,11 +12,17 @@ def get_configuration() -> dict[str, str]:
     }
 
 
-@router.post("/topic/{topic_name}/publish")
-async def publish_to_topic(topic_name: str, req: PublishReq):
+@router.post("/topic/publish")
+async def publish_to_topic(req: PublishReq):
+    # if not req.validate():
+    #     print("Validation Errors:", req.errors())
+    #     raise
+
     configuration = get_configuration()
-    print(f"topic: {topic_name}, key: {req.key}, payload: {req.payload}")
-    manager = KafkaProducerManager(topic_name).init(configuration)
-    manager.produce(req.key, req.payload)
+    manager = KafkaProducerManager(req.topic).init(configuration)
+    json_payload = json_dumps(req.payload)
+    # manager.produce(req.key, req.payload)
+    manager.produce(req.key, json_payload)
     manager.flush()
+
     return {"status": "accepted"}
